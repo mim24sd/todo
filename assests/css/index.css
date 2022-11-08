@@ -37,8 +37,7 @@ body {
   border-radius: var(--space-xxs);
 }
 
-.add-task-input,
-.edit-task-input {
+.add-task-input {
   font-size: var(--size-md);
   border: none;
   outline: none;
@@ -54,6 +53,19 @@ body {
 
 .delete-task-icon {
   color: var(--quaternaryColor);
+}
+
+.edit-task-box,
+.delete-task-box {
+  display: none;
+}
+
+.task-box-wrapper:hover .edit-task-box {
+  display: block;
+}
+
+.task-box-wrapper:hover .delete-task-box {
+  display: block;
 }
 
 .task-list-box {
