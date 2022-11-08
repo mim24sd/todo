@@ -1,11 +1,11 @@
 {
-    "name": "todo",
-    "source": "./index.html",
-       "scripts": {
-      "start": "parcel",
-      "build": "parcel build"
-    },
-    "devDependencies": {
-      "parcel": "latest"
-    }
+  "name": "todo",
+  "source": "./index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "^2.7.0"
   }
+}
