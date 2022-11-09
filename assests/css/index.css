@@ -88,6 +88,7 @@ body {
 }
 
 h1,
+a,
 p,
 input {
   font-family: var(--primaryFont);
