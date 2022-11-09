@@ -1,5 +1,10 @@
 {
   "name": "todo",
+  "description": "this is a simple todo",
+  "version": "1.0.0",
+  "repository": "git@github.com:mim24sd/todo.git",
+  "author": "Shamim",
+  "license": "MIT",
   "source": "./index.html",
   "scripts": {
     "start": "parcel",
