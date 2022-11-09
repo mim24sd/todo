@@ -47,22 +47,19 @@ body {
   color: var(--secondaryColor);
 }
 
-.edit-task-icon {
-  display: none;
-  color: var(--tertiaryColor);
-}
-
+.edit-task-icon,
 .delete-task-icon {
-  display: none;
-  color: var(--quaternaryColor);
+  visibility: hidden;
 }
 
 .task-box:hover .edit-task-icon {
-  display: block;
+  visibility: visible;
+  color: var(--tertiaryColor);
 }
 
 .task-box:hover .delete-task-icon {
-  display: block;
+  visibility: visible;
+  color: var(--quaternaryColor);
 }
 
 .task-list-box {
