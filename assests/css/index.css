@@ -48,23 +48,20 @@ body {
 }
 
 .edit-task-icon {
+  display: none;
   color: var(--tertiaryColor);
 }
 
 .delete-task-icon {
+  display: none;
   color: var(--quaternaryColor);
 }
 
-.edit-task-box,
-.delete-task-box {
-  display: none;
-}
-
-.task-box-wrapper:hover .edit-task-box {
+.task-box:hover .edit-task-icon {
   display: block;
 }
 
-.task-box-wrapper:hover .delete-task-box {
+.task-box:hover .delete-task-icon {
   display: block;
 }
 
