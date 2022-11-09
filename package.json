@@ -1,0 +1,19 @@
+{
+  "name": "todo",
+  "description": "this is a simple todo",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mim24sd/todo"
+  },
+  "author": "Shamim",
+  "license": "MIT",
+  "source": "./index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "^2.7.0"
+  }
+}
