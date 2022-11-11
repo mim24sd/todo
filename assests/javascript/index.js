@@ -23,6 +23,8 @@ addTaskIcon.addEventListener("click", () => {
 });
 
 async function setNewTask(task) {
+  removeErrors();
+
   try {
     const body = JSON.stringify({ text: task });
     const headers = { "Content-Type": "application/json" };
@@ -60,4 +62,19 @@ function showInputErrorMassage(errorText) {
 
   newTaskErrorMassage.classList.remove("title-error-empty-box");
   newTaskErrorMassage.classList.add("title-error-full-box");
+}
+
+function removeErrors() {
+  newTaskErrorMassage.innerHTML = "";
+
+  taskBox.classList.add("add-task-box");
+  taskBox.classList.remove("add-task-box-error");
+
+  newTaskErrorMassage.classList.add("title-error-empty-box");
+  newTaskErrorMassage.classList.remove("title-error-full-box");
+
+  connectionErrorMassage.innerHTML = "";
+
+  connectionErrorMassage.classList.add("connection-error-empty-box");
+  connectionErrorMassage.classList.remove("connection-error-full-box");
 }
