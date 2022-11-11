@@ -25,15 +25,23 @@ body {
   display: flex;
   color: var(--primaryColor);
   justify-content: space-between;
-  padding: var(--space-xxxl) 0 var(--space-xl) 0;
+  padding: var(--space-xl) 0 var(--space-xl) 0;
 }
 
 .add-task-box {
+  border: var(--space-xxxs) solid var(--borderPrimaryColor);
+}
+
+.add-task-box-error {
+  border: var(--space-xxxs) solid var(--quaternaryColor);
+}
+
+.add-task-box,
+.add-task-box-error {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   padding: var(--space-md);
-  border: var(--space-xxxs) solid var(--borderPrimaryColor);
   border-radius: var(--space-xxs);
 }
 
@@ -44,7 +52,34 @@ body {
 }
 
 .add-task-icon {
+  cursor: pointer;
   color: var(--secondaryColor);
+}
+
+.title-error {
+  font-family: var(--primaryFont);
+  color: var(--quaternaryColor);
+  margin-left: var(--space-md);
+  display: inline;
+}
+
+.connection-error {
+  text-align: center;
+  font-family: var(--primaryFont);
+  color: var(--quaternaryColor);
+}
+
+.connection-error-empty-box {
+  height: var(--space-xxl);
+}
+
+.title-error-empty-box {
+  height: var(--space-lg);
+}
+
+.title-error-full-box,
+.connection-error-full-box {
+  margin-top: 0.5em;
 }
 
 .edit-task-icon,
@@ -60,10 +95,6 @@ body {
 .task-box:hover .delete-task-icon {
   visibility: visible;
   color: var(--quaternaryColor);
-}
-
-.task-list-box {
-  padding-top: var(--space-md);
 }
 
 .task-box {
