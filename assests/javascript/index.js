@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:3030/";
+const baseUrl = "http://127.0.0.1:3030";
 
 const newTask = document.getElementById("task-input");
 const addTaskIcon = document.getElementById("add-task-icon");
@@ -29,7 +29,7 @@ async function setNewTask(task) {
     const body = JSON.stringify({ text: task });
     const headers = { "Content-Type": "application/json" };
 
-    const response = await fetch(`${baseUrl}todos`, {
+    const response = await fetch(`${baseUrl}/todos`, {
       method: "POST",
       body,
       headers,
