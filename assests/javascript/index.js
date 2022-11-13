@@ -57,7 +57,7 @@ function showInputErrorMassage(errorText) {
 
 function removeErrors() {
   newTaskErrorMassage.innerHTML = "";
-  taskBox.classList.remove("error");
+  taskBox.classList.remove("error-border");
 
   networkErrorMassage.style.visibility = "hidden";
 }
