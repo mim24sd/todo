@@ -10,7 +10,7 @@ newTask.addEventListener(
   "keydown",
   (event) => {
     if (event.key === "Enter") {
-      setNewTask(newTask.value);
+      handleNewTask(newTask.value);
       newTask.value = "";
     }
   },
@@ -22,9 +22,12 @@ addTaskIcon.addEventListener("click", () => {
   newTask.value = "";
 });
 
-async function setNewTask(task) {
+async function handleNewTask(task) {
   removeErrors();
+  setNewTask(task);
+}
 
+async function setNewTask(task) {
   try {
     const body = JSON.stringify({ text: task });
     const headers = { "Content-Type": "application/json" };
@@ -56,8 +59,15 @@ function showInputErrorMassage(errorText) {
 }
 
 function removeErrors() {
+  removeInputError();
+  removeNetworkError();
+}
+
+function removeInputError() {
   newTaskErrorMassage.innerHTML = "";
   taskBox.classList.remove("error-border");
+}
 
-  networkErrorMassage.style.visibility = "hidden";
+function removeNetworkError() {
+ networkErrorMassage.style.visibility = "hidden";
 }
