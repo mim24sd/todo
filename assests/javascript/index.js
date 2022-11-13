@@ -7,7 +7,7 @@ const newTaskErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
 
 newTask.addEventListener(
-  "keypress",
+  "keydown",
   (event) => {
     if (event.key === "Enter") {
       setNewTask(newTask.value);
