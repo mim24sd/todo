@@ -19,7 +19,10 @@
   <body>
     <main class="main-box">
       <h1 class="title">Todo</h1>
-      <div id="connection-error" class="connection-error-empty-box"></div>
+      <div id="network-error" class="network-error-box">
+        <p>Something went wrong.</p>
+        <p>Check your connection or try again later.</p>
+      </div>
       <nav>
         <ul class="nav-list-box">
           <li><a>All Tasks 5</a></li>
@@ -35,7 +38,7 @@
         />
         <i class="fa-solid fa-plus add-task-icon" id="add-task-icon"></i>
       </div>
-      <div id="title-error" class="title-error-empty-box"></div>
+      <p id="title-error" class="title-error"></p>
 
       <ul>
         <li class="task-box">

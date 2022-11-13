@@ -29,20 +29,19 @@ body {
 }
 
 .add-task-box {
-  border: var(--space-xxxs) solid var(--borderPrimaryColor);
-}
-
-.add-task-box-error {
-  border: var(--space-xxxs) solid var(--quaternaryColor);
-}
-
-.add-task-box,
-.add-task-box-error {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   padding: var(--space-md);
   border-radius: var(--space-xxs);
+  border-width: var(--space-xxxs);
+  border-style: solid;
+  border-color: var(--borderPrimaryColor);
+  margin-bottom: var(--space-sm);
+}
+
+.error {
+  border-color: var(--quaternaryColor);
 }
 
 .add-task-input {
@@ -59,27 +58,19 @@ body {
 .title-error {
   font-family: var(--primaryFont);
   color: var(--quaternaryColor);
-  margin-left: var(--space-md);
+  margin: var(--space-xxs) 0 0 var(--space-xs);
   display: inline;
 }
 
-.connection-error {
+.network-error-box {
+  margin-top:var(--space-sm);
+  visibility: hidden;
+}
+
+.network-error-box p {
   text-align: center;
   font-family: var(--primaryFont);
   color: var(--quaternaryColor);
-}
-
-.connection-error-empty-box {
-  height: var(--space-xxl);
-}
-
-.title-error-empty-box {
-  height: var(--space-lg);
-}
-
-.title-error-full-box,
-.connection-error-full-box {
-  margin-top: 0.5em;
 }
 
 .edit-task-icon,
