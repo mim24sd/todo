@@ -52,7 +52,7 @@ function showConnecionErrorMassage() {
 function showInputErrorMassage(errorText) {
   newTaskErrorMassage.innerHTML = `<p class="title-error">${errorText}</p>`;
 
-  taskBox.classList.add("error");
+  taskBox.classList.add("error-border");
 }
 
 function removeErrors() {
