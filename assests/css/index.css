@@ -40,7 +40,7 @@ body {
   margin-bottom: var(--space-sm);
 }
 
-.error {
+.error-border {
   border-color: var(--quaternaryColor);
 }
 
