@@ -94,7 +94,7 @@ body {
 
 .task-box {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto;
   gap: 3%;
   align-items: center;
   padding: var(--space-md);
