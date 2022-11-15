@@ -40,7 +40,7 @@ body {
   margin-bottom: var(--space-sm);
 }
 
-.error-border {
+.error {
   border-color: var(--quaternaryColor);
 }
 
@@ -65,6 +65,10 @@ body {
 .network-error-box {
   margin-top:var(--space-sm);
   visibility: hidden;
+}
+
+.visible{
+  visibility: visible;
 }
 
 .network-error-box p {

@@ -2,7 +2,7 @@ const baseUrl = "http://127.0.0.1:3030";
 
 const newTask = document.getElementById("task-input");
 const addTaskIcon = document.getElementById("add-task-icon");
-const taskBox = document.getElementById("task-box");
+const addTaskBox = document.getElementById("add-task-box");
 const newTaskErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
 
@@ -11,23 +11,20 @@ newTask.addEventListener(
   (event) => {
     if (event.key === "Enter") {
       handleNewTask(newTask.value);
-      newTask.value = "";
     }
-  },
-  false
+  }
 );
 
 addTaskIcon.addEventListener("click", () => {
-  setNewTask(newTask.value);
-  newTask.value = "";
+  handleNewTask(newTask.value);
 });
 
 async function handleNewTask(task) {
   removeErrors();
-  setNewTask(task);
+  addTask(task);
 }
 
-async function setNewTask(task) {
+async function addTask(task) {
   try {
     const body = JSON.stringify({ text: task });
     const headers = { "Content-Type": "application/json" };
@@ -49,13 +46,13 @@ async function setNewTask(task) {
 }
 
 function showConnecionErrorMassage() {
-  networkErrorMassage.style.visibility = "visible";
+  networkErrorMassage.classList.add("visible");
 }
 
 function showInputErrorMassage(errorText) {
   newTaskErrorMassage.innerHTML = `<p class="title-error">${errorText}</p>`;
 
-  taskBox.classList.add("error-border");
+  addTaskBox.classList.add("error");
 }
 
 function removeErrors() {
@@ -65,9 +62,9 @@ function removeErrors() {
 
 function removeInputError() {
   newTaskErrorMassage.innerHTML = "";
-  taskBox.classList.remove("error-border");
+  addTaskBox.classList.remove("error");
 }
 
 function removeNetworkError() {
- networkErrorMassage.style.visibility = "hidden";
+    networkErrorMassage.classList.remove("visible");
 }
