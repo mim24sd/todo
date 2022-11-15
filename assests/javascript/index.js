@@ -5,6 +5,8 @@ const addTaskIcon = document.getElementById("add-task-icon");
 const taskBox = document.getElementById("task-box");
 const newTaskErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
+const taskList = document.getElementById("task-list");
+const filterTasksView = document.getElementById("filter-tasks");
 
 newTask.addEventListener(
   "keydown",
@@ -22,9 +24,13 @@ addTaskIcon.addEventListener("click", () => {
   newTask.value = "";
 });
 
-async function handleNewTask(task) {
+showAllTasks();
+filterTasks();
+
+async function handleNewTask(newTask) {
   removeErrors();
-  setNewTask(task);
+  await setNewTask(newTask);
+  showAllTasks();
 }
 
 async function setNewTask(task) {
@@ -38,7 +44,7 @@ async function setNewTask(task) {
       headers,
     });
 
-    const {result: { error }} = { result: await response.json() };
+    const { result: { error }, } = { result: await response.json() };
 
     if (response.status === 400) {
       showInputErrorMassage(error);
@@ -46,6 +52,58 @@ async function setNewTask(task) {
   } catch {
     showConnecionErrorMassage();
   }
+}
+
+async function getAllTasks() {
+  try {
+    const response = await fetch(`${baseUrl}/todos`);
+    const { result: { data }, } = { result: await response.json() };
+
+    return sortTasks(data);
+  } catch {
+    showConnecionErrorMassage();
+  }
+}
+
+async function showAllTasks() {
+  const tasks = await getAllTasks();
+
+  taskList.innerHTML = tasks.map((task) => {
+    return `<li class="task-box" id=${task.id}>
+              <input type="checkbox" class="task-check-box" ${isChecked(task.isDone)}></input>
+              <p class="task-title">${task.text}</p>
+              <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
+              <i class="fa-solid fa-xmark delete-task-icon"></i>
+            </li>`;}).join("");
+}
+
+async function filterTasks() {
+  const tasks = await getAllTasks();
+  console.log(tasks);
+
+  const completedTasks = getCompletedTasks(tasks);
+  const uncompletedTasks = getUncompletedTasks(tasks);
+
+  filterTasksView.innerHTML = 
+    `<li><a>All Tasks ${tasks.length}</a></li>
+    <li><a>Completed ${completedTasks.length}</a></li>
+    <li><a>Uncompleted ${uncompletedTasks.length}</a></li>`
+}
+
+function getCompletedTasks(tasks) {
+  return tasks.filter((task) => {return task.isDone === true;});
+}
+
+function getUncompletedTasks(tasks) {
+  return tasks.filter((task) => {return task.isDone === false;});
+}
+
+function sortTasks(tasks) {
+  return tasks.sort((task1, task2) => new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime());
+}
+
+function isChecked(isDone) {
+  return isDone === true;
 }
 
 function showConnecionErrorMassage() {
@@ -69,5 +127,5 @@ function removeInputError() {
 }
 
 function removeNetworkError() {
- networkErrorMassage.style.visibility = "hidden";
+  networkErrorMassage.style.visibility = "hidden";
 }

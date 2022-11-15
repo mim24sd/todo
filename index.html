@@ -24,11 +24,7 @@
         <p>Check your connection or try again later.</p>
       </div>
       <nav>
-        <ul class="nav-list-box">
-          <li><a>All Tasks 5</a></li>
-          <li><a>Completed 2</a></li>
-          <li><a>Uncompleted 3</a></li>
-        </ul>
+        <ul class="nav-list-box" id="filter-tasks"></ul>
       </nav>
       <div id="task-box" class="add-task-box">
         <input
@@ -40,23 +36,7 @@
       </div>
       <p id="title-error" class="title-error"></p>
 
-      <ul>
-        <li class="task-box">
-          <p class="task-title">Enjoy life!</p>
-          <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
-          <i class="fa-solid fa-xmark delete-task-icon"></i>
-        </li>
-        <li class="task-box">
-          <p class="task-title">Drink cofee!</p>
-          <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
-          <i class="fa-solid fa-xmark delete-task-icon"></i>
-        </li>
-        <li class="task-box">
-          <p class="task-title">Learn more!</p>
-          <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
-          <i class="fa-solid fa-xmark delete-task-icon"></i>
-        </li>
-      </ul>
+      <ul id="task-list"></ul>
     </main>
 
     <script src="./assests/javascript/index.js"></script>
