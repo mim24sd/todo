@@ -53,7 +53,7 @@ function hideNetworkError() {
 }
 
 function showInputError(errorText) {
-  addTaskInputErrorMassage.innerHTML = `<p class="title-error">${errorText}</p>`;
+  addTaskInputErrorMassage.innerHTML = `${errorText}`;
   addTaskBox.classList.add("error");
 }
 
