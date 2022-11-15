@@ -4,18 +4,25 @@
   <head>
     <title>Todo</title>
 
-    <meta charset="UTF-8">
-    <meta name="description" content="Very simple todo list">
-    <meta name="author" content="Shamim">
-    <meta name="viewport" content="width=device, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="description" content="Very simple todo list" />
+    <meta name="author" content="Shamim" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="./assests/css/index.css">
-    <script src="https://kit.fontawesome.com/ccf39592f4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./assests/css/index.css" />
+    <script
+      src="https://kit.fontawesome.com/ccf39592f4.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
     <main class="main-box">
       <h1 class="title">Todo</h1>
+      <div id="network-error" class="network-error-box">
+        <p>Something went wrong.</p>
+        <p>Check your connection or try again later.</p>
+      </div>
       <nav>
         <ul class="nav-list-box">
           <li><a>All Tasks 5</a></li>
@@ -23,11 +30,16 @@
           <li><a>Uncompleted 3</a></li>
         </ul>
       </nav>
-      <div class="add-task-box">
-        <input class="add-task-input" placeholder="Write here...">
-        <i class="fa-solid fa-plus add-task-icon"></i>
+      <div id="add-task-box" class="add-task-box">
+        <input
+          id="task-input"
+          class="add-task-input"
+          placeholder="Write here..."
+        />
+        <i class="fa-solid fa-plus add-task-icon" id="add-task-icon"></i>
       </div>
-      <ul class="task-list-box">
+      <p id="title-error" class="title-error"></p>
+      <ul>
         <li class="task-box">
           <p class="task-title">Enjoy life!</p>
           <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
