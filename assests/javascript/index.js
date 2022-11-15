@@ -53,12 +53,12 @@ function hideNetworkError() {
 }
 
 function showInputError(errorText) {
-  addTaskInputErrorMassage.innerHTML = `${errorText}`;
+  addTaskInputErrorMassage.innerText = errorText;
   addTaskBox.classList.add("error");
 }
 
 function hideInputError() {
-  addTaskInputErrorMassage.innerHTML = "";
+  addTaskInputErrorMassage.innerText = "";
   addTaskBox.classList.remove("error");
 }
 
