@@ -1,26 +1,26 @@
 const baseUrl = "http://127.0.0.1:3030";
 
-const newTask = document.getElementById("task-input");
+const addTaskInput = document.getElementById("task-input");
 const addTaskIcon = document.getElementById("add-task-icon");
 const addTaskBox = document.getElementById("add-task-box");
-const newTaskErrorMassage = document.getElementById("title-error");
+const addTaskInputErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
 
-newTask.addEventListener(
+addTaskInput.addEventListener(
   "keydown",
   (event) => {
     if (event.key === "Enter") {
-      handleNewTask(newTask.value);
+      handleNewTask(addTaskInput.value);
     }
   }
 );
 
 addTaskIcon.addEventListener("click", () => {
-  handleNewTask(newTask.value);
+  handleNewTask(addTaskInput.value);
 });
 
 async function handleNewTask(task) {
-  removeErrors();
+  hideErrors();
   addTask(task);
 }
 
@@ -34,37 +34,35 @@ async function addTask(task) {
       body,
       headers,
     });
-
-    const {result: { error }} = { result: await response.json() };
+    const {error} = await response.json();
 
     if (response.status === 400) {
-      showInputErrorMassage(error);
+      showInputError(error);
     }
   } catch {
-    showConnecionErrorMassage();
+    showNetworkError();
   }
 }
 
-function showConnecionErrorMassage() {
+function showNetworkError() {
   networkErrorMassage.classList.add("visible");
 }
 
-function showInputErrorMassage(errorText) {
-  newTaskErrorMassage.innerHTML = `<p class="title-error">${errorText}</p>`;
+function hideNetworkError() {
+  networkErrorMassage.classList.remove("visible");
+}
 
+function showInputError(errorText) {
+  addTaskInputErrorMassage.innerHTML = `<p class="title-error">${errorText}</p>`;
   addTaskBox.classList.add("error");
 }
 
-function removeErrors() {
-  removeInputError();
-  removeNetworkError();
-}
-
-function removeInputError() {
-  newTaskErrorMassage.innerHTML = "";
+function hideInputError() {
+  addTaskInputErrorMassage.innerHTML = "";
   addTaskBox.classList.remove("error");
 }
 
-function removeNetworkError() {
-    networkErrorMassage.classList.remove("visible");
+function hideErrors() {
+  hideInputError();
+  hideNetworkError();
 }
