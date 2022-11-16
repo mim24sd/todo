@@ -13,12 +13,14 @@ addTaskInput.addEventListener(
   (event) => {
     if (event.key === "Enter") {
       handleNewTask(addTaskInput.value);
+      addTaskInput.value = "";
     }
   }
 );
 
 addTaskIcon.addEventListener("click", () => {
   handleNewTask(addTaskInput.value);
+  addTaskInput.value = "";
 });
 
 showAllTasks();
