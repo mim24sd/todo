@@ -65,17 +65,28 @@ async function showAllTasks() {
   const tasks = await getAllTasks();
 
   taskList.innerHTML = tasks.map((task) => {
-    return `<li class="task-box" id=${task.id}>
+    return `<li class="task-box tooltip" id=${task.id}>
               <input type="checkbox" class="task-check-box" ${isChecked(task.isDone)}></input>
               <p class="task-title">${task.text}</p>
               <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
+
+              <p class="tooltiptext">${convertTime(task.createdAt)}</p>
             </li>`;}).join("");
+}
+
+function convertTime(time) {
+  const dateTime = new Date(time);
+  
+  const year = dateTime.toLocaleDateString("en-US", { year: "numeric" });
+  const month = dateTime.toLocaleDateString("en-US", { month: "short" });
+  const date = dateTime.toLocaleDateString("en-US", { day: "numeric" });
+
+  return `${date} ${month} ${year}`;
 }
 
 async function filterTasks() {
   const tasks = await getAllTasks();
-  console.log(tasks);
 
   const completedTasks = getCompletedTasks(tasks);
   const uncompletedTasks = getUncompletedTasks(tasks);
