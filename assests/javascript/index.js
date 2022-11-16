@@ -75,7 +75,7 @@ async function showAllTasks() {
               <p class="tooltiptext">${convertTime(task.createdAt)}</p>
             </li>`;}).join("");
 
-  filterTasks();
+  filterTasks(tasks);
 }
 
 function convertTime(time) {
@@ -87,9 +87,7 @@ function convertTime(time) {
   return `${date} ${month} ${year}`;
 }
 
-async function filterTasks() {
-  const tasks = await getAllTasks();
-
+async function filterTasks(tasks) {
   const completedTasks = getCompletedTasks(tasks);
   const uncompletedTasks = getUncompletedTasks(tasks);
 
