@@ -22,7 +22,6 @@ addTaskIcon.addEventListener("click", () => {
 });
 
 showAllTasks();
-filterTasks();
 
 async function handleNewTask(newTask) {
   hideErrors();
@@ -73,11 +72,12 @@ async function showAllTasks() {
 
               <p class="tooltiptext">${convertTime(task.createdAt)}</p>
             </li>`;}).join("");
+
+  filterTasks();
 }
 
 function convertTime(time) {
   const dateTime = new Date(time);
-  
   const year = dateTime.toLocaleDateString("en-US", { year: "numeric" });
   const month = dateTime.toLocaleDateString("en-US", { month: "short" });
   const date = dateTime.toLocaleDateString("en-US", { day: "numeric" });
