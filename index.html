@@ -1,43 +1,42 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <title>Todo</title>
 
-    <meta charset="UTF-8" />
-    <meta name="description" content="Very simple todo list" />
-    <meta name="author" content="Shamim" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <title>Todo</title>
 
-    <link rel="stylesheet" href="./assests/css/index.css" />
-    <script
-      src="https://kit.fontawesome.com/ccf39592f4.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Very simple todo list" />
+  <meta name="author" content="Shamim" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <body>
-    <main class="main-box">
-      <h1 class="title">Todo</h1>
-      <div id="network-error" class="network-error-box">
-        <p>Something went wrong.</p>
-        <p>Check your connection or try again later.</p>
-      </div>
-      <nav>
-        <ul id="filter-tasks" class="nav-list-box"></ul>
-      </nav>
-      <div id="add-task-box" class="add-task-box">
-        <input
-          id="task-input"
-          class="add-task-input"
-          placeholder="Write here..."
-        />
-        <i class="fa-solid fa-plus add-task-icon" id="add-task-icon"></i>
-      </div>
-      <p id="title-error" class="title-error"></p>
-      <ul id="task-list"></ul>
-    </main>
+  <link rel="stylesheet" href="./assests/css/index.css" />
+  <script src="https://kit.fontawesome.com/ccf39592f4.js" crossorigin="anonymous"></script>
+</head>
 
-    <script src="./assests/javascript/index.js"></script>
-  </body>
+<body>
+  <main class="main-box">
+    <h1 class="title">Todo</h1>
+    <div id="network-error" class="network-error-box">
+      <p>Something went wrong.</p>
+      <p>Check your connection or try again later.</p>
+    </div>
+    <nav>
+      <ul class="nav-list-box">
+        <li><a>All Tasks <span id="number-of-all-tasks"></span></a></li>
+        <li><a>Completed <span id="number-of-completed-tasks"></span></a></li>
+        <li><a>Uncompleted <span id="number-of-uncompleted-tasks"></span></a></li>
+      </ul>
+    </nav>
+    <div id="add-task-box" class="add-task-box">
+      <input id="task-input" class="add-task-input" placeholder="Write here..." />
+      <i class="fa-solid fa-plus add-task-icon" id="add-task-icon"></i>
+    </div>
+    <p id="title-error" class="title-error"></p>
+    <ul id="task-list"></ul>
+  </main>
+
+  <script src="./assests/javascript/index.js"></script>
+</body>
+
 </html>

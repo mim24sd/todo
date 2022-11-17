@@ -6,21 +6,23 @@ const addTaskBox = document.getElementById("add-task-box");
 const addTaskInputErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
 const taskList = document.getElementById("task-list");
-const filterTasksView = document.getElementById("filter-tasks");
+const numberOfAllTasks = document.getElementById("number-of-all-tasks");
+const numberOfCompletedTasks = document.getElementById("number-of-completed-tasks");
+const numberOfUncompletedTasks = document.getElementById("number-of-uncompleted-tasks");
 
 addTaskInput.addEventListener(
   "keydown",
   (event) => {
     if (event.key === "Enter") {
       handleNewTask(addTaskInput.value);
-      addTaskInput.value = "";
+      emptyNewTask()
     }
   }
 );
 
 addTaskIcon.addEventListener("click", () => {
   handleNewTask(addTaskInput.value);
-  addTaskInput.value = "";
+  emptyNewTask()
 });
 
 showAllTasks();
@@ -28,7 +30,6 @@ showAllTasks();
 async function handleNewTask(newTask) {
   hideErrors();
   await addTask(newTask);
-  showAllTasks();
 }
 
 async function addTask(task) {
@@ -41,10 +42,12 @@ async function addTask(task) {
       body,
       headers,
     });
-    const {error} = await response.json();
+    const { error } = await response.json();
 
     if (response.status === 400) {
       showInputError(error);
+    } else {
+      showAllTasks();
     }
   } catch {
     showNetworkError();
@@ -54,63 +57,70 @@ async function addTask(task) {
 async function getAllTasks() {
   try {
     const response = await fetch(`${baseUrl}/todos`);
-    const {data} = await response.json();
+    const { data } = await response.json();
 
-    return sortTasks(data);
+    return data;
   } catch {
     showConnecionErrorMassage();
   }
 }
 
 async function showAllTasks() {
-  const tasks = await getAllTasks();
+  const tasks = sortTasksByTime(await getAllTasks());
 
   taskList.innerHTML = tasks.map((task) => {
-    return `<li class="task-box tooltip" id=${task.id}>
-              <input type="checkbox" class="task-check-box" ${isChecked(task.isDone)}></input>
-              <p class="task-title">${task.text}</p>
+    const { id, text, isDone, createdAt } = task;
+
+    return `<li class="task-box tooltip" id="${id}">
+              <input type="checkbox" class="task-check-box" ${isDone}></input>
+              <p class="task-title">${text}</p>
               <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
 
-              <p class="tooltiptext">${convertTime(task.createdAt)}</p>
-            </li>`;}).join("");
+              <p class="tooltiptext">${formatDate(createdAt)}</p>
+            </li>`;
+  }).join("");
 
-  filterTasks(tasks);
+  classifyTasks(tasks);
 }
 
-function convertTime(time) {
+function formatDate(time) {
   const dateTime = new Date(time);
   const year = dateTime.toLocaleDateString("en-US", { year: "numeric" });
   const month = dateTime.toLocaleDateString("en-US", { month: "short" });
-  const date = dateTime.toLocaleDateString("en-US", { day: "numeric" });
+  const day = dateTime.toLocaleDateString("en-US", { day: "numeric" });
 
-  return `${date} ${month} ${year}`;
+  return `${day} ${month} ${year}`;
 }
 
-async function filterTasks(tasks) {
+async function classifyTasks(tasks) {
   const completedTasks = getCompletedTasks(tasks);
   const uncompletedTasks = getUncompletedTasks(tasks);
 
-  filterTasksView.innerHTML = 
-    `<li><a>All Tasks ${tasks.length}</a></li>
-    <li><a>Completed ${completedTasks.length}</a></li>
-    <li><a>Uncompleted ${uncompletedTasks.length}</a></li>`
+  numberOfAllTasks.innerText = tasks.length;
+  numberOfCompletedTasks.innerText = completedTasks.length;
+  numberOfUncompletedTasks.innerText = uncompletedTasks.length;
 }
 
 function getCompletedTasks(tasks) {
-  return tasks.filter((task) => {return task.isDone === true;});
+  return tasks.filter((task) => { task.isDone });
 }
 
 function getUncompletedTasks(tasks) {
-  return tasks.filter((task) => {return task.isDone === false;});
+  return tasks.filter((task) => { return task.isDone === false; });
 }
 
-function sortTasks(tasks) {
+function sortTasksByTime(tasks) {
   return tasks.sort((task1, task2) => new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime());
 }
 
-function isChecked(isDone) {
-  return isDone === true;
+function emptyNewTask() {
+  addTaskInput.value = "";
+}
+
+function hideErrors() {
+  hideInputError();
+  hideNetworkError();
 }
 
 function showNetworkError() {
@@ -129,9 +139,4 @@ function showInputError(errorText) {
 function hideInputError() {
   addTaskInputErrorMassage.innerText = "";
   addTaskBox.classList.remove("error");
-}
-
-function hideErrors() {
-  hideInputError();
-  hideNetworkError();
 }
