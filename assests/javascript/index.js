@@ -6,23 +6,23 @@ const addTaskBox = document.getElementById("add-task-box");
 const addTaskInputErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
 const taskList = document.getElementById("task-list");
-const numberOfAllTasks = document.getElementById("number-of-all-tasks");
-const numberOfCompletedTasks = document.getElementById("number-of-completed-tasks");
-const numberOfUncompletedTasks = document.getElementById("number-of-uncompleted-tasks");
+const allTasksCount = document.getElementById("all-tasks-count");
+const completedTasksCount = document.getElementById("completed-tasks-count");
+const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
 
 addTaskInput.addEventListener(
   "keydown",
   (event) => {
     if (event.key === "Enter") {
       handleNewTask(addTaskInput.value);
-      emptyNewTask()
+      clearNewTaskInput()
     }
   }
 );
 
 addTaskIcon.addEventListener("click", () => {
   handleNewTask(addTaskInput.value);
-  emptyNewTask()
+  clearNewTaskInput()
 });
 
 showAllTasks();
@@ -97,24 +97,24 @@ async function classifyTasks(tasks) {
   const completedTasks = getCompletedTasks(tasks);
   const uncompletedTasks = getUncompletedTasks(tasks);
 
-  numberOfAllTasks.innerText = tasks.length;
-  numberOfCompletedTasks.innerText = completedTasks.length;
-  numberOfUncompletedTasks.innerText = uncompletedTasks.length;
+  allTasksCount.innerText = tasks.length;
+  completedTasksCount.innerText = completedTasks.length;
+  uncompletedTasksCount.innerText = uncompletedTasks.length;
 }
 
 function getCompletedTasks(tasks) {
-  return tasks.filter((task) => { task.isDone });
+  return tasks.filter((task) => task.isDone);
 }
 
 function getUncompletedTasks(tasks) {
-  return tasks.filter((task) => { return task.isDone === false; });
+  return tasks.filter((task) => !task.isDone);
 }
 
 function sortTasksByTime(tasks) {
   return tasks.sort((task1, task2) => new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime());
 }
 
-function emptyNewTask() {
+function clearNewTaskInput() {
   addTaskInput.value = "";
 }
 
