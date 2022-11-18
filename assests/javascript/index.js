@@ -81,7 +81,39 @@ async function showAllTasks() {
             </li>`;
   }).join("");
 
+  handleTaskEvents();
   classifyTasks(tasks);
+}
+
+function handleTaskEvents() {
+  handleDeleteIcon();
+}
+
+function handleDeleteIcon() {
+  const deleteTaskIcons = Array.from(document.getElementsByClassName("delete-task-icon"));
+
+  deleteTaskIcons.forEach((deleteTaskIcon) => {
+    deleteTaskIcon.addEventListener("click", (event) => {
+      deleteTask(event.target.parentNode.id);
+    })
+  })
+}
+
+async function deleteTask(id) {
+  try {
+    const response = await fetch(`${baseUrl}/todos/${id}`, {
+      method: "DELETE"
+    });
+    const { error } = await response.json();
+
+    if (response.status === 400) {
+      showInputError(error);
+    } else {
+      showAllTasks();
+    }
+  } catch {
+    showNetworkError();
+  }
 }
 
 function formatDate(time) {
