@@ -87,6 +87,7 @@ async function showAllTasks() {
 
 function handleTaskEvents() {
   handleDeleteIcon();
+  handlecheckBox();
 }
 
 function handleDeleteIcon() {
@@ -109,6 +110,12 @@ async function deleteTask(id) {
   } catch {
     showNetworkError();
   }
+}
+
+function handlecheckBox() {
+}
+
+async function updateTask(id, isDone, text) {
 }
 
 function formatDate(time) {
