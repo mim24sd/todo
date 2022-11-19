@@ -66,13 +66,11 @@ async function getAllTasks() {
 }
 
 async function showAllTasks() {
-  const tasks = sortTasksByTime(await getAllTasks());
+  const tasks = sortTasks(await getAllTasks());
 
-  taskList.innerHTML = tasks.map((task) => {
-    const { id, text, isDone, createdAt } = task;
-
+  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt }) => {
     return `<li class="task-box tooltip" id="${id}">
-              <input type="checkbox" class="task-check-box" ${isDone}></input>
+              <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
               <p class="task-title">${text}</p>
               <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
@@ -87,7 +85,7 @@ async function showAllTasks() {
 
 function handleTaskEvents() {
   handleDeleteIcon();
-  handlecheckBox();
+  handleStatus();
 }
 
 function handleDeleteIcon() {
@@ -112,10 +110,35 @@ async function deleteTask(id) {
   }
 }
 
-function handlecheckBox() {
+function handleStatus() {
+  const checkboxes = Array.from(document.querySelectorAll('input[type=checkbox]'));
+
+  checkboxes.forEach((checkBox) => {
+    checkBox.addEventListener("change", function (event) {
+      updateTask(event.target.parentNode.id, this.checked);
+    })
+  })
 }
 
-async function updateTask(id, isDone, text) {
+async function updateTask(id, isDone) {
+  try {
+    const body = JSON.stringify({ isDone });
+    const headers = { "Content-Type": "application/json" };
+
+    await fetch(`${baseUrl}/todos/${id}`, {
+      method: "PATCH",
+      body,
+      headers,
+    });
+
+    showAllTasks();
+  } catch {
+    showNetworkError();
+  }
+}
+
+function isChecked(isDone) {
+  return isDone ? "checked" : "";
 }
 
 function formatDate(time) {
@@ -144,8 +167,16 @@ function getUncompletedTasks(tasks) {
   return tasks.filter((task) => !task.isDone);
 }
 
+function sortTasks(tasks) {
+  return sortTasksByIsDone(sortTasksByTime(tasks));
+}
+
 function sortTasksByTime(tasks) {
   return tasks.sort((task1, task2) => new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime());
+}
+
+function sortTasksByIsDone(tasks) {
+  return tasks.sort((task1, task2) => +task1.isDone - +task2.isDone);
 }
 
 function clearNewTaskInput() {
