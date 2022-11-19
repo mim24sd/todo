@@ -101,16 +101,11 @@ function handleDeleteIcon() {
 
 async function deleteTask(id) {
   try {
-    const response = await fetch(`${baseUrl}/todos/${id}`, {
+    await fetch(`${baseUrl}/todos/${id}`, {
       method: "DELETE"
     });
-    const { error } = await response.json();
 
-    if (response.status === 400) {
-      showInputError(error);
-    } else {
-      showAllTasks();
-    }
+    showAllTasks();
   } catch {
     showNetworkError();
   }
