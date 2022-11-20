@@ -115,12 +115,12 @@ function handleStatus() {
 
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
-      updateTask(event.target.parentNode.id, this.checked);
+      updateTaskStatus(event.target.parentNode.id, this.checked);
     })
   })
 }
 
-async function updateTask(id, isDone) {
+async function updateTaskStatus(id, isDone) {
   try {
     const body = JSON.stringify({ isDone });
     const headers = { "Content-Type": "application/json" };
