@@ -9,6 +9,7 @@ const taskList = document.getElementById("task-list");
 const allTasksCount = document.getElementById("all-tasks-count");
 const completedTasksCount = document.getElementById("completed-tasks-count");
 const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
+const headers = { "Content-Type": "application/json" };
 
 addTaskInput.addEventListener(
   "keydown",
@@ -35,7 +36,6 @@ async function handleNewTask(newTask) {
 async function addTask(task) {
   try {
     const body = JSON.stringify({ text: task });
-    const headers = { "Content-Type": "application/json" };
 
     const response = await fetch(`${baseUrl}/todos`, {
       method: "POST",
@@ -111,8 +111,8 @@ async function deleteTask(id) {
 }
 
 function handleStatus() {
-  const checkboxes = Array.from(document.querySelectorAll('input[type=checkbox]'));
-
+  const checkboxes = Array.from(document.getElementsByClassName("task-check-box"));
+  
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
       updateTaskStatus(event.target.parentNode.id, this.checked);
@@ -123,7 +123,6 @@ function handleStatus() {
 async function updateTaskStatus(id, isDone) {
   try {
     const body = JSON.stringify({ isDone });
-    const headers = { "Content-Type": "application/json" };
 
     await fetch(`${baseUrl}/todos/${id}`, {
       method: "PATCH",
