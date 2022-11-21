@@ -86,6 +86,7 @@ async function showAllTasks() {
 function handleTaskEvents() {
   handleDeleteIcon();
   handleStatus();
+  handleTitle();
 }
 
 function handleDeleteIcon() {
@@ -134,6 +135,119 @@ async function updateTaskStatus(id, isDone) {
   } catch {
     showNetworkError();
   }
+}
+
+function handleTitle() {
+  const editTaskIcons = Array.from(document.getElementsByClassName("edit-task-icon"));
+
+  editTaskIcons.forEach((editTaskIcon) => {
+    editTaskIcon.addEventListener("click", (event) => {
+      const id = event.target.parentNode.id;
+      const titleBox = document.getElementById(`box-title-${id}`);
+      const taskTitle = titleBox.innerText;
+
+      convertEditIconToSubmitIcon(id);
+      convertTaskTitleToInput(id, titleBox, taskTitle);
+      editTaskTitle(id, taskTitle);
+    })
+  })
+}
+
+function convertEditIconToSubmitIcon(id) {
+  hideEditIcon(id);
+  showSubmitIcon(id);
+}
+
+function hideEditIcon(id) {
+  const editIcon = document.getElementById(`edit-task-icon-${id}`);
+
+  editIcon.classList.remove("edit-task-icon");
+  editIcon.classList.add("hidden");
+}
+
+function showSubmitIcon(id) {
+  const submitIcon = document.getElementById(`submit-task-icon-${id}`);
+
+  submitIcon.classList.remove("hidden");
+  submitIcon.classList.add("submit-task-icon");
+}
+
+function convertTaskTitleToInput(id, titleBox, taskTitle) {
+  titleBox.innerHTML = `<input class="edit-task-title" id="edit-title-${id}" type="text" value="${taskTitle}"/>
+                        <p id="edit-error-${id}" class="edit-error"></p>`;
+}
+
+function editTaskTitle(id, taskTitle) {
+  const submitIcon = document.getElementById(`submit-task-icon-${id}`);
+
+  submitIcon.addEventListener("click", function (event) {
+    const newTaskTitle = document.querySelector('input[type=text]').value;
+    const newTaskTitleIsEmpty = !(newTaskTitle.trim());
+
+    if (taskTitle !== newTaskTitle && newTaskTitleIsEmpty === false) {
+      updateTitle(id, newTaskTitle);
+    }
+    else if (newTaskTitleIsEmpty === true) {
+      showEditEmptyInputError(id);
+    }
+  })
+}
+
+async function showEditEmptyInputError(id) {
+  const editTaskInput = document.getElementById(`edit-title-${id}`);
+  const editTitleError = document.getElementById(`edit-error-${id}`);
+  editTaskInput.classList.add("error");
+  editTitleError.innerText = "Input title can not be empty!";
+
+  // addTaskInputErrorMassage.innerText = errorText;
+  // addTaskBox.classList.add("error");
+}
+
+async function updateTitle(id, text) {
+  try {
+    const body = JSON.stringify({ text });
+    const headers = { "Content-Type": "application/json" };
+
+    const response = await fetch(`${baseUrl}/todos/${id}`, {
+      method: "PATCH",
+      body,
+      headers,
+    });
+
+    const { data } = await response.json();
+    updateTaskBox(data)
+  } catch {
+    showNetworkError();
+  }
+}
+
+async function updateTaskBox(editedTask) {
+  convertSubmitIconToEditIcon(editedTask);
+  convertInputToTaskTitle(editedTask);
+}
+
+function convertInputToTaskTitle({ id, text }) {
+  const titleBox = document.getElementById(`box-title-${id}`);
+  titleBox.innerHTML = `<p class="task-title">${text}</p>`
+}
+
+function convertSubmitIconToEditIcon({ id }) {
+  hideSubmitIcon(id);
+  showEditIcon(id);
+}
+
+function showEditIcon(id) {
+  const editIcon = document.getElementById(`edit-task-icon-${id}`);
+
+  editIcon.classList.add("edit-task-icon");
+  editIcon.classList.remove("hidden");
+}
+
+function hideSubmitIcon(id) {
+  const submitIcon = document.getElementById(`submit-task-icon-${id}`);
+
+  submitIcon.classList.add("hidden");
+  submitIcon.classList.remove("submit-task-icon");
 }
 
 function isChecked(isDone) {
