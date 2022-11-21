@@ -15,7 +15,7 @@
 
   /* sizes */
   --size-unit: 1em;
-  --size-sm: calc(0.5 * var(--size-unit));
+  --size-sm: calc(0.75 * var(--size-unit));
   --size-md: calc(1 * var(--size-unit));
   --size-lg: calc(1.3 * var(--size-unit));
   --size-xl: calc(2 * var(--size-unit));

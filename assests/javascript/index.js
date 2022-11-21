@@ -68,22 +68,33 @@ async function getAllTasks() {
 async function showAllTasks() {
   const tasks = sortTasks(await getAllTasks());
 
-  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt }) => {
+  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt, updatedAt }) => {
     return `<li class="task-box tooltip" id="${id}">
               <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
-              <div id="box-title-${id}">
+              <div id="title-box-${id}" class="title-box">
                 <p class="task-title">${text}</p>
               </div>
               <i class="fa-solid fa-check-circle hidden" id="submit-task-icon-${id}"></i>
               <i class="fa-solid fa-pen-to-square edit-task-icon" id="edit-task-icon-${id}"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
 
-              <p class="tooltiptext">${formatDate(createdAt)}</p>
+              <div class="tooltip-text" id="tooltip-${id}">${tooltipText(createdAt, updatedAt)}</div>
             </li>`;
   }).join("");
 
   handleTaskEvents();
   classifyTasks(tasks);
+}
+
+function tooltipText(createdAt, updatedAt) {
+  let tooltip = `<p>${formatDate(createdAt)}</p>`;
+
+  if (createdAt !== updatedAt) {
+    tooltip = `<p>Created at : ${formatDate(createdAt)}</p>
+               <p>Updated at : ${formatDate(updatedAt)}</p>`
+  }
+
+  return tooltip;
 }
 
 function handleTaskEvents() {
@@ -116,7 +127,7 @@ async function deleteTask(id) {
 
 function handleStatus() {
   const checkboxes = Array.from(document.getElementsByClassName("task-check-box"));
-  
+
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
       updateTaskStatus(event.target.parentNode.id, this.checked);
@@ -146,7 +157,7 @@ function handleTitle() {
   editTaskIcons.forEach((editTaskIcon) => {
     editTaskIcon.addEventListener("click", (event) => {
       const id = event.target.parentNode.id;
-      const titleBox = document.getElementById(`box-title-${id}`);
+      const titleBox = document.getElementById(`title-box-${id}`);
       const taskTitle = titleBox.innerText;
 
       convertEditIconToSubmitIcon(id);
@@ -177,7 +188,7 @@ function showSubmitIcon(id) {
 
 function convertTaskTitleToInput(id, titleBox, taskTitle) {
   titleBox.innerHTML = `<input class="edit-task-title" id="edit-title-${id}" type="text" value="${taskTitle}"/>
-                        <p id="edit-error-${id}" class="edit-error"></p>`;
+                        <p id="edit-error-${id}" class="edit-title-error"></p>`;
 }
 
 function editTaskTitle(id, taskTitle) {
@@ -199,11 +210,10 @@ function editTaskTitle(id, taskTitle) {
 async function showEditEmptyInputError(id) {
   const editTaskInput = document.getElementById(`edit-title-${id}`);
   const editTitleError = document.getElementById(`edit-error-${id}`);
-  editTaskInput.classList.add("error");
-  editTitleError.innerText = "Input title can not be empty!";
 
-  // addTaskInputErrorMassage.innerText = errorText;
-  // addTaskBox.classList.add("error");
+  editTaskInput.classList.add("error");
+
+  editTitleError.innerText = "Add title!";
 }
 
 async function updateTitle(id, text) {
@@ -227,16 +237,24 @@ async function updateTitle(id, text) {
 async function updateTaskBox(editedTask) {
   convertSubmitIconToEditIcon(editedTask);
   convertInputToTaskTitle(editedTask);
+
+  addUpdatedAtOnTooltip(editedTask);
 }
 
 function convertInputToTaskTitle({ id, text }) {
-  const titleBox = document.getElementById(`box-title-${id}`);
+  const titleBox = document.getElementById(`title-box-${id}`);
   titleBox.innerHTML = `<p class="task-title">${text}</p>`
 }
 
 function convertSubmitIconToEditIcon({ id }) {
   hideSubmitIcon(id);
   showEditIcon(id);
+}
+
+function addUpdatedAtOnTooltip({ id, createdAt, updatedAt }) {
+  const tooltip = document.getElementById(`tooltip-${id}`);
+  tooltip.innerHTML = `<p>Created at : ${formatDate(createdAt)}</p>
+                       <p>Updated at : ${formatDate(updatedAt)}</p>`
 }
 
 function showEditIcon(id) {

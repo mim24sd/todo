@@ -62,13 +62,23 @@ body {
   display: inline;
 }
 
+.edit-title-error {
+  font-size: var(--size-md);
+  color: var(--quaternaryColor);
+}
+
 .network-error-box {
-  margin-top:var(--space-sm);
+  margin-top: var(--space-sm);
   visibility: hidden;
 }
 
-.visible{
+.visible {
   visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+  display: none;
 }
 
 .network-error-box p {
@@ -80,6 +90,12 @@ body {
 .edit-task-icon,
 .delete-task-icon {
   visibility: hidden;
+}
+
+.submit-task-icon {
+  visibility: visible;
+  color: var(--tertiaryColor);
+  margin-left: 150%;
 }
 
 .task-box:hover .edit-task-icon {
@@ -94,13 +110,19 @@ body {
 
 .task-box {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto auto;
   gap: 3%;
   align-items: center;
   padding: var(--space-md);
   margin-top: var(--space-md);
   border: var(--space-xxxs) solid var(--borderPrimaryColor);
   border-radius: var(--space-xs);
+}
+
+.title-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .task-title {
@@ -118,18 +140,19 @@ input {
   position: relative;
 }
 
-.tooltip .tooltiptext {
+.tooltip .tooltip-text {
   visibility: hidden;
   width: max-content;
   background-color: var(--backgroundtertiaryColor);
   border-radius: var(--space-xs);
   padding: var(--space-sm);
   position: absolute;
+  font-size: var(--size-sm);
   z-index: 1;
   right: 105%;
 }
 
-.tooltip:hover .tooltiptext {
+.tooltip:hover .tooltip-text {
   visibility: visible;
 }
 
