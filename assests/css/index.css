@@ -63,11 +63,32 @@ body {
 }
 
 .network-error-box {
-  margin-top:var(--space-sm);
+  margin-top: var(--space-sm);
   visibility: hidden;
 }
 
-.visible{
+.task-list {
+  overflow-y: scroll;
+  max-height: 300px;
+  padding-inline: 5px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background-color: var(--backgroundPrimaryColor);
+  border-radius: var(--space-xs);
+}
+
+.task-list::-webkit-scrollbar {
+  width: var(--space-xs);
+  background-color: var(--backgroundPrimaryColor);
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  border-radius: var(--space-xs);
+  background-color: var(--secondaryColor)
+}
+
+.visible {
   visibility: visible;
 }
 
@@ -105,6 +126,10 @@ body {
 
 .task-title {
   font-size: var(--size-lg);
+}
+
+a {
+  cursor: pointer;
 }
 
 h1,

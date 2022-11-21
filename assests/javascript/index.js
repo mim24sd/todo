@@ -8,8 +8,11 @@ const networkErrorMassage = document.getElementById("network-error");
 const taskList = document.getElementById("task-list");
 const allTasksCount = document.getElementById("all-tasks-count");
 const completedTasksCount = document.getElementById("completed-tasks-count");
-const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
+const unCompletedTasksCount = document.getElementById("uncompleted-tasks-count");
 const headers = { "Content-Type": "application/json" };
+const allTasks = document.getElementById("all-tasks");
+const completedTasks = document.getElementById("completed-tasks");
+const unCompletedTasks = document.getElementById("uncompleted-tasks");
 
 addTaskInput.addEventListener(
   "keydown",
@@ -26,7 +29,22 @@ addTaskIcon.addEventListener("click", () => {
   clearNewTaskInput()
 });
 
-showAllTasks();
+allTasks.addEventListener("click", () => {
+  localStorage.setItem("state", "allTasks");
+  showTasks();
+});
+
+completedTasks.addEventListener("click", () => {
+  localStorage.setItem("state", "completedTasks");
+  showTasks();
+});
+
+unCompletedTasks.addEventListener("click", () => {
+  localStorage.setItem("state", "unCompletedTasks");
+  showTasks();
+});
+
+showTasks();
 
 async function handleNewTask(newTask) {
   hideErrors();
@@ -47,7 +65,7 @@ async function addTask(task) {
     if (response.status === 400) {
       showInputError(error);
     } else {
-      showAllTasks();
+      showTasks();
     }
   } catch {
     showNetworkError();
@@ -65,10 +83,11 @@ async function getAllTasks() {
   }
 }
 
-async function showAllTasks() {
-  const tasks = sortTasks(await getAllTasks());
+async function showTasks() {
+  const allTasks = sortTasks(await getAllTasks());
+  const classifiedTasks = classifyTasks(allTasks);
 
-  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt }) => {
+  taskList.innerHTML = classifiedTasks.map(({ id, text, isDone, createdAt }) => {
     return `<li class="task-box tooltip" id="${id}">
               <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
               <p class="task-title">${text}</p>
@@ -80,7 +99,7 @@ async function showAllTasks() {
   }).join("");
 
   handleTaskEvents();
-  classifyTasks(tasks);
+  countingClassifiedTasks(allTasks);
 }
 
 function handleTaskEvents() {
@@ -104,7 +123,7 @@ async function deleteTask(id) {
       method: "DELETE"
     });
 
-    showAllTasks();
+    showTasks();
   } catch {
     showNetworkError();
   }
@@ -112,7 +131,7 @@ async function deleteTask(id) {
 
 function handleStatus() {
   const checkboxes = Array.from(document.getElementsByClassName("task-check-box"));
-  
+
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
       updateTaskStatus(event.target.parentNode.id, this.checked);
@@ -130,7 +149,7 @@ async function updateTaskStatus(id, isDone) {
       headers,
     });
 
-    showAllTasks();
+    showTasks();
   } catch {
     showNetworkError();
   }
@@ -149,13 +168,26 @@ function formatDate(time) {
   return `${day} ${month} ${year}`;
 }
 
-async function classifyTasks(tasks) {
+function classifyTasks(tasks) {
+  const state = localStorage.getItem("state");
+
+  if (state === "completedTasks") {
+    return getCompletedTasks(tasks);
+  } else if (state === "unCompletedTasks") {
+    return getUncompletedTasks(tasks);
+  }
+  else {
+    return tasks;
+  }
+}
+
+async function countingClassifiedTasks(tasks) {
   const completedTasks = getCompletedTasks(tasks);
   const uncompletedTasks = getUncompletedTasks(tasks);
 
   allTasksCount.innerText = tasks.length;
   completedTasksCount.innerText = completedTasks.length;
-  uncompletedTasksCount.innerText = uncompletedTasks.length;
+  unCompletedTasksCount.innerText = uncompletedTasks.length;
 }
 
 function getCompletedTasks(tasks) {
