@@ -93,7 +93,7 @@ function tooltipText(createdAt, updatedAt) {
     tooltip = `<p>Created at : ${formatDate(createdAt)}</p>
                <p>Updated at : ${formatDate(updatedAt)}</p>`
   }
-
+  
   return tooltip;
 }
 
@@ -237,7 +237,6 @@ async function updateTitle(id, text) {
 async function updateTaskBox(editedTask) {
   convertSubmitIconToEditIcon(editedTask);
   convertInputToTaskTitle(editedTask);
-
   addUpdatedAtOnTooltip(editedTask);
 }
 
