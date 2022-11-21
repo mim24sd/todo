@@ -9,6 +9,7 @@ const taskList = document.getElementById("task-list");
 const allTasksCount = document.getElementById("all-tasks-count");
 const completedTasksCount = document.getElementById("completed-tasks-count");
 const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
+const headers = { "Content-Type": "application/json" };
 
 addTaskInput.addEventListener(
   "keydown",
@@ -35,7 +36,6 @@ async function handleNewTask(newTask) {
 async function addTask(task) {
   try {
     const body = JSON.stringify({ text: task });
-    const headers = { "Content-Type": "application/json" };
 
     const response = await fetch(`${baseUrl}/todos`, {
       method: "POST",
@@ -66,13 +66,11 @@ async function getAllTasks() {
 }
 
 async function showAllTasks() {
-  const tasks = sortTasksByTime(await getAllTasks());
+  const tasks = sortTasks(await getAllTasks());
 
-  taskList.innerHTML = tasks.map((task) => {
-    const { id, text, isDone, createdAt } = task;
-
+  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt }) => {
     return `<li class="task-box tooltip" id="${id}">
-              <input type="checkbox" class="task-check-box" ${isDone}></input>
+              <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
               <p class="task-title">${text}</p>
               <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
@@ -87,6 +85,7 @@ async function showAllTasks() {
 
 function handleTaskEvents() {
   handleDeleteIcon();
+  handleStatus();
 }
 
 function handleDeleteIcon() {
@@ -109,6 +108,36 @@ async function deleteTask(id) {
   } catch {
     showNetworkError();
   }
+}
+
+function handleStatus() {
+  const checkboxes = Array.from(document.getElementsByClassName("task-check-box"));
+  
+  checkboxes.forEach((checkBox) => {
+    checkBox.addEventListener("change", function (event) {
+      updateTaskStatus(event.target.parentNode.id, this.checked);
+    })
+  })
+}
+
+async function updateTaskStatus(id, isDone) {
+  try {
+    const body = JSON.stringify({ isDone });
+
+    await fetch(`${baseUrl}/todos/${id}`, {
+      method: "PATCH",
+      body,
+      headers,
+    });
+
+    showAllTasks();
+  } catch {
+    showNetworkError();
+  }
+}
+
+function isChecked(isDone) {
+  return isDone ? "checked" : "";
 }
 
 function formatDate(time) {
@@ -137,8 +166,16 @@ function getUncompletedTasks(tasks) {
   return tasks.filter((task) => !task.isDone);
 }
 
+function sortTasks(tasks) {
+  return sortTasksByIsDone(sortTasksByTime(tasks));
+}
+
 function sortTasksByTime(tasks) {
   return tasks.sort((task1, task2) => new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime());
+}
+
+function sortTasksByIsDone(tasks) {
+  return tasks.sort((task1, task2) => +task1.isDone - +task2.isDone);
 }
 
 function clearNewTaskInput() {
