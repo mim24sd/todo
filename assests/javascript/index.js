@@ -71,8 +71,11 @@ async function showAllTasks() {
   taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt }) => {
     return `<li class="task-box tooltip" id="${id}">
               <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
-              <p class="task-title">${text}</p>
-              <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
+              <div id="box-title-${id}">
+                <p class="task-title">${text}</p>
+              </div>
+              <i class="fa-solid fa-check-circle hidden" id="submit-task-icon-${id}"></i>
+              <i class="fa-solid fa-pen-to-square edit-task-icon" id="edit-task-icon-${id}"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
 
               <p class="tooltiptext">${formatDate(createdAt)}</p>
