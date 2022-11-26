@@ -192,10 +192,10 @@ function editTaskTitle(id, taskTitle) {
   const submitIcon = document.getElementById(`submit-task-icon-${id}`);
 
   submitIcon.addEventListener("click", function () {
-    const newTaskTitle = document.querySelector("input[type=text]").value.trim();
+    const newTaskTitle = Array.from(document.getElementsByClassName("edit-task-title"))[0].value.trim();
 
     if (!newTaskTitle) {showEditEmptyInputError(id);}
-    
+
     if (taskTitle !== newTaskTitle) {updateTitle(id, newTaskTitle);}
   });
 }
