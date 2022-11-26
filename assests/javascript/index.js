@@ -11,19 +11,16 @@ const completedTasksCount = document.getElementById("completed-tasks-count");
 const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
 const headers = { "Content-Type": "application/json" };
 
-addTaskInput.addEventListener(
-  "keydown",
-  (event) => {
-    if (event.key === "Enter") {
-      handleNewTask(addTaskInput.value);
-      clearNewTaskInput()
-    }
+addTaskInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    handleNewTask(addTaskInput.value);
+    clearNewTaskInput();
   }
-);
+});
 
 addTaskIcon.addEventListener("click", () => {
   handleNewTask(addTaskInput.value);
-  clearNewTaskInput()
+  clearNewTaskInput();
 });
 
 showAllTasks();
@@ -69,7 +66,7 @@ async function showAllTasks() {
   const tasks = sortTasks(await getAllTasks());
 
   taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt, updatedAt }) => {
-    return `<li class="task-box tooltip" id="${id}">
+      return `<li class="task-box tooltip" id="${id}">
               <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
               <div id="title-box-${id}" class="title-box">
                 <p class="task-title">${text}</p>
@@ -78,22 +75,21 @@ async function showAllTasks() {
               <i class="fa-solid fa-pen-to-square edit-task-icon" id="edit-task-icon-${id}"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
 
-              <div class="tooltip-text" id="tooltip-${id}">${tooltipText(createdAt, updatedAt)}</div>
+              <div class="tooltip-text" id="tooltip-${id}">${getTooltipText(createdAt, updatedAt)}</div>
             </li>`;
-  }).join("");
+    }).join("");
 
   handleTaskEvents();
   classifyTasks(tasks);
 }
 
-function tooltipText(createdAt, updatedAt) {
-  let tooltip = `<p>${formatDate(createdAt)}</p>`;
+function getTooltipText(createdAt, updatedAt) {
+  let tooltip = `<p>Created at : ${formatDate(createdAt)}</p>`;
 
   if (createdAt !== updatedAt) {
-    tooltip = `<p>Created at : ${formatDate(createdAt)}</p>
-               <p>Updated at : ${formatDate(updatedAt)}</p>`
+    tooltip += `<p>Updated at : ${formatDate(updatedAt)}</p>`;
   }
-  
+
   return tooltip;
 }
 
@@ -109,14 +105,14 @@ function handleDeleteIcon() {
   deleteTaskIcons.forEach((deleteTaskIcon) => {
     deleteTaskIcon.addEventListener("click", (event) => {
       deleteTask(event.target.parentNode.id);
-    })
-  })
+    });
+  });
 }
 
 async function deleteTask(id) {
   try {
     await fetch(`${baseUrl}/todos/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
     });
 
     showAllTasks();
@@ -131,8 +127,8 @@ function handleStatus() {
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
       updateTaskStatus(event.target.parentNode.id, this.checked);
-    })
-  })
+    });
+  });
 }
 
 async function updateTaskStatus(id, isDone) {
@@ -161,10 +157,10 @@ function handleTitle() {
       const taskTitle = titleBox.innerText;
 
       convertEditIconToSubmitIcon(id);
-      convertTaskTitleToInput(id, titleBox, taskTitle);
+      convertTaskTitleToInput(id, taskTitle);
       editTaskTitle(id, taskTitle);
-    })
-  })
+    });
+  });
 }
 
 function convertEditIconToSubmitIcon(id) {
@@ -186,7 +182,8 @@ function showSubmitIcon(id) {
   submitIcon.classList.add("submit-task-icon");
 }
 
-function convertTaskTitleToInput(id, titleBox, taskTitle) {
+function convertTaskTitleToInput(id, taskTitle) {
+  const titleBox = document.getElementById(`title-box-${id}`);
   titleBox.innerHTML = `<input class="edit-task-title" id="edit-title-${id}" type="text" value="${taskTitle}"/>
                         <p id="edit-error-${id}" class="edit-title-error"></p>`;
 }
@@ -194,17 +191,13 @@ function convertTaskTitleToInput(id, titleBox, taskTitle) {
 function editTaskTitle(id, taskTitle) {
   const submitIcon = document.getElementById(`submit-task-icon-${id}`);
 
-  submitIcon.addEventListener("click", function (event) {
-    const newTaskTitle = document.querySelector('input[type=text]').value;
-    const newTaskTitleIsEmpty = !(newTaskTitle.trim());
+  submitIcon.addEventListener("click", function () {
+    const newTaskTitle = document.querySelector("input[type=text]").value.trim();
 
-    if (taskTitle !== newTaskTitle && newTaskTitleIsEmpty === false) {
-      updateTitle(id, newTaskTitle);
-    }
-    else if (newTaskTitleIsEmpty === true) {
-      showEditEmptyInputError(id);
-    }
-  })
+    if (!newTaskTitle) {showEditEmptyInputError(id);}
+    
+    if (taskTitle !== newTaskTitle) {updateTitle(id, newTaskTitle);}
+  });
 }
 
 async function showEditEmptyInputError(id) {
@@ -219,7 +212,6 @@ async function showEditEmptyInputError(id) {
 async function updateTitle(id, text) {
   try {
     const body = JSON.stringify({ text });
-    const headers = { "Content-Type": "application/json" };
 
     const response = await fetch(`${baseUrl}/todos/${id}`, {
       method: "PATCH",
@@ -228,7 +220,7 @@ async function updateTitle(id, text) {
     });
 
     const { data } = await response.json();
-    updateTaskBox(data)
+    updateTaskBox(data);
   } catch {
     showNetworkError();
   }
@@ -242,7 +234,7 @@ async function updateTaskBox(editedTask) {
 
 function convertInputToTaskTitle({ id, text }) {
   const titleBox = document.getElementById(`title-box-${id}`);
-  titleBox.innerHTML = `<p class="task-title">${text}</p>`
+  titleBox.innerHTML = `<p class="task-title">${text}</p>`;
 }
 
 function convertSubmitIconToEditIcon({ id }) {
@@ -253,7 +245,7 @@ function convertSubmitIconToEditIcon({ id }) {
 function addUpdatedAtOnTooltip({ id, createdAt, updatedAt }) {
   const tooltip = document.getElementById(`tooltip-${id}`);
   tooltip.innerHTML = `<p>Created at : ${formatDate(createdAt)}</p>
-                       <p>Updated at : ${formatDate(updatedAt)}</p>`
+                       <p>Updated at : ${formatDate(updatedAt)}</p>`;
 }
 
 function showEditIcon(id) {
