@@ -87,7 +87,6 @@ body {
   color: var(--quaternaryColor);
 }
 
-
 .task-list {
   overflow-y: scroll;
   max-height: 300px;
@@ -106,7 +105,7 @@ body {
 
 .task-list::-webkit-scrollbar-thumb {
   border-radius: var(--space-xs);
-  background-color: var(--secondaryColor)
+  background-color: var(--secondaryColor);
 }
 
 .edit-task-icon,
@@ -160,7 +159,7 @@ input {
   font-family: var(--primaryFont);
 }
 
-a{
+a {
   cursor: pointer;
 }
 

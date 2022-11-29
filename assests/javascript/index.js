@@ -11,9 +11,7 @@ const completedTasks = document.getElementById("completed-tasks");
 const unCompletedTasks = document.getElementById("uncompleted-tasks");
 const allTasksCount = document.getElementById("all-tasks-count");
 const completedTasksCount = document.getElementById("completed-tasks-count");
-const uncompletedTasksCount = document.getElementById(
-  "uncompleted-tasks-count"
-);
+const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
 
 const headers = { "Content-Type": "application/json" };
 
@@ -124,9 +122,7 @@ function handleTaskEvents() {
 }
 
 function handleDeleteIcon() {
-  const deleteTaskIcons = Array.from(
-    document.getElementsByClassName("delete-task-icon")
-  );
+  const deleteTaskIcons = Array.from(document.getElementsByClassName("delete-task-icon"));
 
   deleteTaskIcons.forEach((deleteTaskIcon) => {
     deleteTaskIcon.addEventListener("click", (event) => {
@@ -148,9 +144,7 @@ async function deleteTask(id) {
 }
 
 function handleStatus() {
-  const checkboxes = Array.from(
-    document.getElementsByClassName("task-check-box")
-  );
+  const checkboxes = Array.from(document.getElementsByClassName("task-check-box"));
 
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
@@ -176,9 +170,7 @@ async function updateTaskStatus(id, isDone) {
 }
 
 function handleTitle() {
-  const editTaskIcons = Array.from(
-    document.getElementsByClassName("edit-task-icon")
-  );
+  const editTaskIcons = Array.from(document.getElementsByClassName("edit-task-icon"));
 
   editTaskIcons.forEach((editTaskIcon) => {
     editTaskIcon.addEventListener("click", (event) => {
@@ -222,9 +214,7 @@ function editTaskTitle(id, taskTitle) {
   const submitIcon = document.getElementById(`submit-task-icon-${id}`);
 
   submitIcon.addEventListener("click", function () {
-    const newTaskTitle = Array.from(
-      document.getElementsByClassName("edit-task-title")
-    )[0].value.trim();
+    const newTaskTitle = Array.from(document.getElementsByClassName("edit-task-title"))[0].value.trim();
 
     if (!newTaskTitle) {
       showEditEmptyInputError(id);
@@ -345,9 +335,7 @@ function sortTasks(tasks) {
 }
 
 function sortTasksByTime(tasks) {
-  return tasks.sort((task1, task2) =>
-    new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime()
-  );
+  return tasks.sort((task1, task2) => new Date(task2.createdAt).getTime() - new Date(task1.createdAt).getTime());
 }
 
 function sortTasksByIsDone(tasks) {
