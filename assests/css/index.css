@@ -89,10 +89,12 @@ body {
 
 .edit-task-icon,
 .delete-task-icon {
+  cursor: pointer;
   visibility: hidden;
 }
 
 .submit-task-icon {
+  cursor: pointer;
   visibility: visible;
   color: var(--tertiaryColor);
   margin-left: 150%;
@@ -134,6 +136,10 @@ a,
 p,
 input {
   font-family: var(--primaryFont);
+}
+
+a{
+  cursor: pointer;
 }
 
 .tooltip {
