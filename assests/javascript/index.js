@@ -11,19 +11,16 @@ const completedTasksCount = document.getElementById("completed-tasks-count");
 const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
 const headers = { "Content-Type": "application/json" };
 
-addTaskInput.addEventListener(
-  "keydown",
-  (event) => {
-    if (event.key === "Enter") {
-      handleNewTask(addTaskInput.value);
-      clearNewTaskInput()
-    }
+addTaskInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    handleNewTask(addTaskInput.value);
+    clearNewTaskInput();
   }
-);
+});
 
 addTaskIcon.addEventListener("click", () => {
   handleNewTask(addTaskInput.value);
-  clearNewTaskInput()
+  clearNewTaskInput();
 });
 
 showAllTasks();
@@ -68,24 +65,38 @@ async function getAllTasks() {
 async function showAllTasks() {
   const tasks = sortTasks(await getAllTasks());
 
-  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt }) => {
-    return `<li class="task-box tooltip" id="${id}">
+  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt, updatedAt }) => {
+      return `<li class="task-box tooltip" id="${id}">
               <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
-              <p class="task-title">${text}</p>
-              <i class="fa-solid fa-pen-to-square edit-task-icon"></i>
+              <div id="title-box-${id}" class="title-box">
+                <p class="task-title">${text}</p>
+              </div>
+              <i class="fa-solid fa-check-circle hidden" id="submit-task-icon-${id}"></i>
+              <i class="fa-solid fa-pen-to-square edit-task-icon" id="edit-task-icon-${id}"></i>
               <i class="fa-solid fa-xmark delete-task-icon"></i>
 
-              <p class="tooltiptext">${formatDate(createdAt)}</p>
+              <div class="tooltip-text" id="tooltip-${id}">${getTooltipText(createdAt, updatedAt)}</div>
             </li>`;
-  }).join("");
+    }).join("");
 
   handleTaskEvents();
   classifyTasks(tasks);
 }
 
+function getTooltipText(createdAt, updatedAt) {
+  let tooltip = `<p>Created at : ${formatDate(createdAt)}</p>`;
+
+  if (createdAt !== updatedAt) {
+    tooltip += `<p>Updated at : ${formatDate(updatedAt)}</p>`;
+  }
+
+  return tooltip;
+}
+
 function handleTaskEvents() {
   handleDeleteIcon();
   handleStatus();
+  handleTitle();
 }
 
 function handleDeleteIcon() {
@@ -94,14 +105,14 @@ function handleDeleteIcon() {
   deleteTaskIcons.forEach((deleteTaskIcon) => {
     deleteTaskIcon.addEventListener("click", (event) => {
       deleteTask(event.target.parentNode.id);
-    })
-  })
+    });
+  });
 }
 
 async function deleteTask(id) {
   try {
     await fetch(`${baseUrl}/todos/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
     });
 
     showAllTasks();
@@ -112,12 +123,12 @@ async function deleteTask(id) {
 
 function handleStatus() {
   const checkboxes = Array.from(document.getElementsByClassName("task-check-box"));
-  
+
   checkboxes.forEach((checkBox) => {
     checkBox.addEventListener("change", function (event) {
       updateTaskStatus(event.target.parentNode.id, this.checked);
-    })
-  })
+    });
+  });
 }
 
 async function updateTaskStatus(id, isDone) {
@@ -134,6 +145,121 @@ async function updateTaskStatus(id, isDone) {
   } catch {
     showNetworkError();
   }
+}
+
+function handleTitle() {
+  const editTaskIcons = Array.from(document.getElementsByClassName("edit-task-icon"));
+
+  editTaskIcons.forEach((editTaskIcon) => {
+    editTaskIcon.addEventListener("click", (event) => {
+      const id = event.target.parentNode.id;
+      const titleBox = document.getElementById(`title-box-${id}`);
+      const taskTitle = titleBox.innerText;
+
+      convertEditIconToSubmitIcon(id);
+      convertTaskTitleToInput(id, taskTitle);
+      editTaskTitle(id, taskTitle);
+    });
+  });
+}
+
+function convertEditIconToSubmitIcon(id) {
+  hideEditIcon(id);
+  showSubmitIcon(id);
+}
+
+function hideEditIcon(id) {
+  const editIcon = document.getElementById(`edit-task-icon-${id}`);
+
+  editIcon.classList.remove("edit-task-icon");
+  editIcon.classList.add("hidden");
+}
+
+function showSubmitIcon(id) {
+  const submitIcon = document.getElementById(`submit-task-icon-${id}`);
+
+  submitIcon.classList.remove("hidden");
+  submitIcon.classList.add("submit-task-icon");
+}
+
+function convertTaskTitleToInput(id, taskTitle) {
+  const titleBox = document.getElementById(`title-box-${id}`);
+  titleBox.innerHTML = `<input class="edit-task-title" id="edit-title-${id}" type="text" value="${taskTitle}"/>
+                        <p id="edit-error-${id}" class="edit-title-error"></p>`;
+}
+
+function editTaskTitle(id, taskTitle) {
+  const submitIcon = document.getElementById(`submit-task-icon-${id}`);
+
+  submitIcon.addEventListener("click", function () {
+    const newTaskTitle = Array.from(document.getElementsByClassName("edit-task-title"))[0].value.trim();
+
+    if (!newTaskTitle) {showEditEmptyInputError(id);}
+
+    if (taskTitle !== newTaskTitle) {updateTitle(id, newTaskTitle);}
+  });
+}
+
+async function showEditEmptyInputError(id) {
+  const editTaskInput = document.getElementById(`edit-title-${id}`);
+  const editTitleError = document.getElementById(`edit-error-${id}`);
+
+  editTaskInput.classList.add("error");
+
+  editTitleError.innerText = "Add title!";
+}
+
+async function updateTitle(id, text) {
+  try {
+    const body = JSON.stringify({ text });
+
+    const response = await fetch(`${baseUrl}/todos/${id}`, {
+      method: "PATCH",
+      body,
+      headers,
+    });
+
+    const { data } = await response.json();
+    updateTaskBox(data);
+  } catch {
+    showNetworkError();
+  }
+}
+
+async function updateTaskBox(editedTask) {
+  convertSubmitIconToEditIcon(editedTask);
+  convertInputToTaskTitle(editedTask);
+  addUpdatedAtOnTooltip(editedTask);
+}
+
+function convertInputToTaskTitle({ id, text }) {
+  const titleBox = document.getElementById(`title-box-${id}`);
+  titleBox.innerHTML = `<p class="task-title">${text}</p>`;
+}
+
+function convertSubmitIconToEditIcon({ id }) {
+  hideSubmitIcon(id);
+  showEditIcon(id);
+}
+
+function addUpdatedAtOnTooltip({ id, createdAt, updatedAt }) {
+  const tooltip = document.getElementById(`tooltip-${id}`);
+  tooltip.innerHTML = `<p>Created at : ${formatDate(createdAt)}</p>
+                       <p>Updated at : ${formatDate(updatedAt)}</p>`;
+}
+
+function showEditIcon(id) {
+  const editIcon = document.getElementById(`edit-task-icon-${id}`);
+
+  editIcon.classList.add("edit-task-icon");
+  editIcon.classList.remove("hidden");
+}
+
+function hideSubmitIcon(id) {
+  const submitIcon = document.getElementById(`submit-task-icon-${id}`);
+
+  submitIcon.classList.add("hidden");
+  submitIcon.classList.remove("submit-task-icon");
 }
 
 function isChecked(isDone) {
