@@ -6,9 +6,13 @@ const addTaskBox = document.getElementById("add-task-box");
 const addTaskInputErrorMassage = document.getElementById("title-error");
 const networkErrorMassage = document.getElementById("network-error");
 const taskList = document.getElementById("task-list");
+const allTasks = document.getElementById("all-tasks");
+const completedTasks = document.getElementById("completed-tasks");
+const unCompletedTasks = document.getElementById("uncompleted-tasks");
 const allTasksCount = document.getElementById("all-tasks-count");
 const completedTasksCount = document.getElementById("completed-tasks-count");
 const uncompletedTasksCount = document.getElementById("uncompleted-tasks-count");
+
 const headers = { "Content-Type": "application/json" };
 
 addTaskInput.addEventListener("keydown", (event) => {
@@ -23,7 +27,22 @@ addTaskIcon.addEventListener("click", () => {
   clearNewTaskInput();
 });
 
-showAllTasks();
+allTasks.addEventListener("click", () => {
+  localStorage.removeItem("task-list-filter");
+  showTasks();
+});
+
+completedTasks.addEventListener("click", () => {
+  localStorage.setItem("task-list-filter", "completedTasks");
+  showTasks();
+});
+
+unCompletedTasks.addEventListener("click", () => {
+  localStorage.setItem("task-list-filter", "unCompletedTasks");
+  showTasks();
+});
+
+showTasks();
 
 async function handleNewTask(newTask) {
   hideErrors();
@@ -44,7 +63,7 @@ async function addTask(task) {
     if (response.status === 400) {
       showInputError(error);
     } else {
-      showAllTasks();
+      showTasks();
     }
   } catch {
     showNetworkError();
@@ -62,10 +81,12 @@ async function getAllTasks() {
   }
 }
 
-async function showAllTasks() {
-  const tasks = sortTasks(await getAllTasks());
+async function showTasks() {
+  const allTasks = sortTasks(await getAllTasks());
+  const classifiedTasks = classifyTasks(allTasks);
 
-  taskList.innerHTML = tasks.map(({ id, text, isDone, createdAt, updatedAt }) => {
+  taskList.innerHTML = classifiedTasks
+    .map(({ id, text, isDone, createdAt, updatedAt }) => {
       return `<li class="task-box tooltip" id="${id}">
               <input type="checkbox" class="task-check-box" ${isChecked(isDone)}></input>
               <div id="title-box-${id}" class="title-box">
@@ -77,10 +98,11 @@ async function showAllTasks() {
 
               <div class="tooltip-text" id="tooltip-${id}">${getTooltipText(createdAt, updatedAt)}</div>
             </li>`;
-    }).join("");
+    })
+    .join("");
 
   handleTaskEvents();
-  classifyTasks(tasks);
+  countingClassifiedTasks(allTasks);
 }
 
 function getTooltipText(createdAt, updatedAt) {
@@ -115,7 +137,7 @@ async function deleteTask(id) {
       method: "DELETE",
     });
 
-    showAllTasks();
+    showTasks();
   } catch {
     showNetworkError();
   }
@@ -141,7 +163,7 @@ async function updateTaskStatus(id, isDone) {
       headers,
     });
 
-    showAllTasks();
+    showTasks();
   } catch {
     showNetworkError();
   }
@@ -194,9 +216,13 @@ function editTaskTitle(id, taskTitle) {
   submitIcon.addEventListener("click", function () {
     const newTaskTitle = Array.from(document.getElementsByClassName("edit-task-title"))[0].value.trim();
 
-    if (!newTaskTitle) {showEditEmptyInputError(id);}
+    if (!newTaskTitle) {
+      showEditEmptyInputError(id);
+    }
 
-    if (taskTitle !== newTaskTitle) {updateTitle(id, newTaskTitle);}
+    if (taskTitle !== newTaskTitle) {
+      updateTitle(id, newTaskTitle);
+    }
   });
 }
 
@@ -275,7 +301,19 @@ function formatDate(time) {
   return `${day} ${month} ${year}`;
 }
 
-async function classifyTasks(tasks) {
+function classifyTasks(tasks) {
+  const taskListFilter = localStorage.getItem("task-list-filter");
+
+  if (taskListFilter === "completedTasks") {
+    return getCompletedTasks(tasks);
+  } else if (taskListFilter === "unCompletedTasks") {
+    return getUncompletedTasks(tasks);
+  } else {
+    return tasks;
+  }
+}
+
+function countingClassifiedTasks(tasks) {
   const completedTasks = getCompletedTasks(tasks);
   const uncompletedTasks = getUncompletedTasks(tasks);
 
